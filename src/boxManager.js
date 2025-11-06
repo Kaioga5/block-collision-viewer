@@ -109,7 +109,13 @@ export function updateBoxMesh(box) {
   box.mesh.userData.type = 'collisionBox';
   sceneApi.scene.add(box.mesh);
 
-  if (selectedBox && selectedBox.id === box.id) sceneApi.transformControls.attach(box.mesh);
+  if (selectedBox && selectedBox.id === box.id) {
+    sceneApi.transformControls.attach(box.mesh);
+    if (sceneApi && typeof sceneApi.attachAxisGizmo === 'function') {
+      const size = Math.max(box.size[0], box.size[1], box.size[2], 4);
+      sceneApi.attachAxisGizmo(box.mesh, size);
+    }
+  }
   emitChange();
 }
 
@@ -121,12 +127,18 @@ export function selectBox(idOrBox) {
   deselectBox();
   selectedBox = box;
   sceneApi.transformControls.attach(box.mesh);
+  // Show world-aligned axis arrows matching the scene axes
+  if (sceneApi && typeof sceneApi.attachAxisGizmo === 'function') {
+    const size = Math.max(box.size[0], box.size[1], box.size[2], 4);
+    sceneApi.attachAxisGizmo(box.mesh, size);
+  }
   emitChange();
 }
 
 export function deselectBox() {
   if (!selectedBox) return;
   sceneApi.transformControls.detach();
+  if (sceneApi && typeof sceneApi.detachAxisGizmo === 'function') sceneApi.detachAxisGizmo();
   selectedBox = null;
   emitChange();
 }
@@ -150,6 +162,10 @@ export function setBoxValuesFromUI(id, newOrigin, newSize) {
   if (sizeChanged) updateBoxMesh(box);
   else {
     box.mesh.position.set(box.origin[0] + box.size[0] / 2, box.origin[1] + box.size[1] / 2, box.origin[2] + box.size[2] / 2);
+    if (selectedBox && selectedBox.id === box.id && sceneApi && typeof sceneApi.attachAxisGizmo === 'function') {
+      const size = Math.max(box.size[0], box.size[1], box.size[2], 4);
+      sceneApi.attachAxisGizmo(box.mesh, size);
+    }
     emitChange();
   }
 }

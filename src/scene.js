@@ -68,6 +68,16 @@ export function initScene(container) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
+  // World-aligned axis arrows shown when a box is selected.
+  const axisGizmo = new THREE.Group();
+  axisGizmo.visible = false;
+
+  const arrowX = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 4, 0xff0000);
+  const arrowY = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 4, 0x00ff00);
+  const arrowZ = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0), 4, 0x0000ff);
+  axisGizmo.add(arrowX, arrowY, arrowZ);
+  scene.add(axisGizmo);
+
   function onWindowResize() {
     const w = container.clientWidth;
     const h = container.clientHeight;
@@ -95,5 +105,18 @@ export function initScene(container) {
     transformControls,
     orbitControls,
     container,
+    // Axis gizmo API
+    attachAxisGizmo(object, size = 4) {
+      if (!object) return;
+      axisGizmo.position.copy(object.position);
+      // scale arrows according to provided size
+      arrowX.setLength(size);
+      arrowY.setLength(size);
+      arrowZ.setLength(size);
+      axisGizmo.visible = true;
+    },
+    detachAxisGizmo() {
+      axisGizmo.visible = false;
+    },
   };
 }

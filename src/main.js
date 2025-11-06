@@ -94,6 +94,11 @@ sceneApi.transformControls.addEventListener('objectChange', () => {
   const clamped = utils.clampOrigin(newOrigin, size);
   mesh.position.set(clamped[0] + size[0] / 2, clamped[1] + size[1] / 2, clamped[2] + size[2] / 2);
   selected.origin = clamped;
+  // keep world-aligned axis gizmo positioned on the selected mesh
+  if (sceneApi && typeof sceneApi.attachAxisGizmo === 'function') {
+    const gizmoSize = Math.max(size[0], size[1], size[2], 4);
+    sceneApi.attachAxisGizmo(mesh, gizmoSize);
+  }
   updateUI();
 });
 
