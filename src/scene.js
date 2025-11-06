@@ -30,17 +30,33 @@ export function initScene(container) {
   transformControls.setMode('translate');
   transformControls.setTranslationSnap(1);
 
-  // Disable TransformControls' own visual arrows so we only show the
-  // world-aligned ArrowHelpers (axis gizmo). TransformControls will still
-  // function for dragging.
-  transformControls.showX = false;
-  transformControls.showY = false;
-  transformControls.showZ = false;
+  // Keep TransformControls interactive but hide its visible gizmo geometry
+  // by making its materials fully transparent. This preserves pickable
+  // handles while we render our own world-aligned ArrowHelpers for visuals.
+  transformControls.showX = true;
+  transformControls.showY = true;
+  transformControls.showZ = true;
   transformControls.showRotation = false;
   transformControls.showScale = false;
   transformControls.showXY = false;
   transformControls.showYZ = false;
   transformControls.showXZ = false;
+
+  // Make TransformControls visual meshes invisible but keep them raycastable.
+  // We traverse after a short microtask to ensure the internal gizmo has been created.
+  Promise.resolve().then(() => {
+    transformControls.traverse((obj) => {
+      if (obj.isMesh || obj.isLine) {
+        if (obj.material) {
+          obj.material = obj.material.clone();
+          obj.material.transparent = true;
+          obj.material.opacity = 0.0;
+          // keep depthTest so pickers remain in expected order
+          obj.material.depthTest = true;
+        }
+      }
+    });
+  });
 
   scene.add(transformControls);
 
@@ -112,10 +128,14 @@ export function initScene(container) {
     attachAxisGizmo(object, size = 4) {
       if (!object) return;
       axisGizmo.position.copy(object.position);
-      // scale arrows according to provided size
-      arrowX.setLength(size);
-      arrowY.setLength(size);
-      arrowZ.setLength(size);
+      // Compute arrow length based on camera distance so arrows appear a
+      // consistent size on-screen regardless of the box's physical size.
+      const camPos = camera.position;
+      const dist = camPos.distanceTo(object.position);
+      const length = Math.max(2, dist * 0.12); // tuned multiplier for pleasant sizing
+      arrowX.setLength(length);
+      arrowY.setLength(length);
+      arrowZ.setLength(length);
       axisGizmo.visible = true;
     },
     detachAxisGizmo() {
