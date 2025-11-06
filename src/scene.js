@@ -42,20 +42,22 @@ export function initScene(container) {
   transformControls.showYZ = false;
   transformControls.showXZ = false;
 
-  // Make TransformControls visual meshes invisible but keep them raycastable.
-  // We traverse after a short microtask to ensure the internal gizmo has been created.
+  // Hide the visible gizmo visuals but keep the internal pickers/helpers so
+  // TransformControls remains interactive. Access the internal gizmo and set
+  // its visual groups invisible; pickers remain present for raycasting.
   Promise.resolve().then(() => {
-    transformControls.traverse((obj) => {
-      if (obj.isMesh || obj.isLine) {
-        if (obj.material) {
-          obj.material = obj.material.clone();
-          obj.material.transparent = true;
-          obj.material.opacity = 0.0;
-          // keep depthTest so pickers remain in expected order
-          obj.material.depthTest = true;
-        }
+    try {
+      const g = transformControls._gizmo; // internal but stable across versions used here
+      if (g && g.gizmo) {
+        if (g.gizmo.translate) g.gizmo.translate.visible = false;
+        if (g.gizmo.rotate) g.gizmo.rotate.visible = false;
+        if (g.gizmo.scale) g.gizmo.scale.visible = false;
       }
-    });
+    } catch (e) {
+      // If internals differ, don't block — leave TransformControls visuals as-is.
+      // Interaction will still work in that case.
+      console.warn('Could not hide TransformControls visuals:', e);
+    }
   });
 
   scene.add(transformControls);
@@ -136,6 +138,18 @@ export function initScene(container) {
       arrowX.setLength(length);
       arrowY.setLength(length);
       arrowZ.setLength(length);
+
+      // Also adjust the TransformControls visual scale so the pick/drag handles
+      // match the same on-screen size. TransformControls scales handles by:
+      // handleScale ~= factor * size / 7, so compute the size value that will
+      // make handles roughly the same visual length as our arrows.
+      try {
+        const fovFactor = camera.isOrthographicCamera ? ((camera.top - camera.bottom) / camera.zoom) : (dist * Math.min(1.9 * Math.tan(Math.PI * camera.fov / 360) / camera.zoom, 7));
+        const desiredSize = Math.max(0.5, (length * 7) / Math.max(0.0001, fovFactor));
+        transformControls.setSize(desiredSize);
+      } catch (e) {
+        // ignore failures to set size; it's a best-effort visual tweak
+      }
       axisGizmo.visible = true;
     },
     detachAxisGizmo() {
