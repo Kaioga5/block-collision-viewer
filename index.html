@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kaioga’s Collision Box Editor</title>
+    <title>Kaioga’s Collision Box Editor</title>
 
     <!-- Load Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- three.js and controls are imported as ES modules from inside src/*.js -->
+    <!-- three.js and controls are imported as ES modules from inside src/*.js -->
     <style>
       body {
         font-family: "Inter", sans-serif;
@@ -41,16 +41,17 @@
       /* Highlight for selected box in UI */
       .box-item.selected {
         background-color: #374151; /* darker gray to stand out */
-        box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
         transform: translateY(-2px);
       }
 
       .box-item {
-        transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+        transition: transform 160ms ease, box-shadow 160ms ease,
+          background-color 160ms ease;
       }
       .box-item:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
       }
 
       /* Styles for collapsible details tag */
@@ -83,7 +84,7 @@
       .input-wrapper {
         position: relative;
       }
-  /* The colored corner tag */
+      /* The colored corner tag */
       .input-wrapper::before {
         content: "";
         position: absolute;
@@ -105,7 +106,7 @@
         border-top-color: #3b82f6; /* blue-500 */
       }
 
-  /* Custom styles for number inputs */
+      /* Custom styles for number inputs */
       input[type="number"] {
         background-color: #1f2937; /* gray-800 */
         border: 1px solid #374151; /* gray-700 */
@@ -125,12 +126,36 @@
         margin: 0;
       }
       /* Color swatch and picker styling */
-      .color-swatch { width: 1.25rem; height: 1.25rem; }
-      .color-picker { width: 2rem; height: 2rem; padding: 0; border-radius: 6px; border: 1px solid #374151; }
-      .box-name { display: inline-block; min-width: 6rem; }
-      .ui-header-sub { color: #cbd5e1; font-size: 0.95rem; margin-top: 0.25rem; }
-      .help-tips { color: #9ca3af; font-size: 0.85rem; margin-top: 0.5rem; }
-      .muted-button { background: transparent; border: 1px solid #374151; color: #e6edf3; }
+      .color-swatch {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+      .color-picker {
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border-radius: 6px;
+        border: 1px solid #374151;
+      }
+      .box-name {
+        display: inline-block;
+        min-width: 6rem;
+      }
+      .ui-header-sub {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        margin-top: 0.25rem;
+      }
+      .help-tips {
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+      .muted-button {
+        background: transparent;
+        border: 1px solid #374151;
+        color: #e6edf3;
+      }
     </style>
   </head>
   <body class="bg-gray-900 text-gray-200">
@@ -147,11 +172,10 @@
         <div class="p-4 border-b border-gray-700">
           <h1 class="text-2xl font-bold">Kaioga’s Collision Box Editor</h1>
           <p class="ui-header-sub">
-            Simple, friendly editing of Minecraft-style collision boxes. Click a box to select, or add a new one.
+            Simple, friendly editing of Minecraft block collision boxes. Click a
+            box to select, or add a new one. All feedback is welcome (:
           </p>
-          <p class="help-tips">
-            Quick tips: click a box to reveal the move handles, use the color picker to choose a color, and open "Live JSON Output" to copy.
-          </p>
+          <p class="help-tips"></p>
         </div>
 
         <!-- Box List -->
@@ -251,7 +275,11 @@
               class="color-swatch w-4 h-4 rounded-full border-2 border-white"
             ></div>
             <!-- Small color picker to allow quick color overrides -->
-            <input type="color" class="color-picker w-8 h-8 p-0 border-0 rounded" title="Pick color" />
+            <input
+              type="color"
+              class="color-picker w-8 h-8 p-0 border-0 rounded"
+              title="Pick color"
+            />
             <span class="box-name font-bold text-lg">Box 1</span>
           </div>
           <!-- Action Buttons: Duplicate and Delete -->
@@ -397,11 +425,11 @@
          specifier 'three' (OrbitControls, TransformControls) resolve to
          the correct ESM build on unpkg when loaded in the browser. -->
     <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+        }
       }
-    }
     </script>
 
     <script type="module" src="src/main.js"></script>
