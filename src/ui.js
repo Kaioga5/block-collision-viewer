@@ -35,6 +35,18 @@ function updateBoxListUI(boxes, selectedBox) {
     const item = template.content.cloneNode(true).firstElementChild;
     item.dataset.id = box.id;
 
+    // make each item keyboard-focusable and announceable
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', `Select Box ${index + 1}`);
+    // allow Enter/Space to select the item when focused
+    item.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        callbacks.selectBox && callbacks.selectBox(box.id);
+      }
+    });
+
     if (selectedBox && selectedBox.id === box.id) item.classList.add('selected');
 
     // Safely compute color hex; fall back to a default if missing.

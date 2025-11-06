@@ -40,7 +40,17 @@
       }
       /* Highlight for selected box in UI */
       .box-item.selected {
-        background-color: #4a5568; /* gray-700 */
+        background-color: #374151; /* darker gray to stand out */
+        box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+        transform: translateY(-2px);
+      }
+
+      .box-item {
+        transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+      }
+      .box-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
       }
 
       /* Styles for collapsible details tag */
@@ -73,7 +83,7 @@
       .input-wrapper {
         position: relative;
       }
-      /* The colored corner tag */
+  /* The colored corner tag */
       .input-wrapper::before {
         content: "";
         position: absolute;
@@ -95,7 +105,7 @@
         border-top-color: #3b82f6; /* blue-500 */
       }
 
-      /* Custom styles for number inputs */
+  /* Custom styles for number inputs */
       input[type="number"] {
         background-color: #1f2937; /* gray-800 */
         border: 1px solid #374151; /* gray-700 */
@@ -114,6 +124,13 @@
         -webkit-appearance: none;
         margin: 0;
       }
+      /* Color swatch and picker styling */
+      .color-swatch { width: 1.25rem; height: 1.25rem; }
+      .color-picker { width: 2rem; height: 2rem; padding: 0; border-radius: 6px; border: 1px solid #374151; }
+      .box-name { display: inline-block; min-width: 6rem; }
+      .ui-header-sub { color: #cbd5e1; font-size: 0.95rem; margin-top: 0.25rem; }
+      .help-tips { color: #9ca3af; font-size: 0.85rem; margin-top: 0.5rem; }
+      .muted-button { background: transparent; border: 1px solid #374151; color: #e6edf3; }
     </style>
   </head>
   <body class="bg-gray-900 text-gray-200">
@@ -129,8 +146,11 @@
         <!-- Header -->
         <div class="p-4 border-b border-gray-700">
           <h1 class="text-2xl font-bold">Collision Box Editor</h1>
-          <p class="text-sm text-gray-400">
-            Click a box to select, or add a new one.
+          <p class="ui-header-sub">
+            Simple, friendly editing of Minecraft-style collision boxes. Click a box to select, or add a new one.
+          </p>
+          <p class="help-tips">
+            Quick tips: click a box to reveal the move handles, use the color picker to choose a color, and open "Live JSON Output" to copy.
           </p>
         </div>
 
@@ -190,9 +210,9 @@
           </details>
         </div>
 
-        <!-- Live JSON Output Panel (collapsible) -->
+        <!-- Live JSON Output Panel (collapsible; start closed to reduce clutter) -->
         <div class="px-4 py-2 border-t border-gray-700">
-          <details open>
+          <details>
             <!-- Start open by default -->
             <summary class="text-lg font-semibold">Live JSON Output</summary>
             <div class="pt-2">
