@@ -371,6 +371,17 @@
       </div>
     </template>
 
+    <!-- Import map for three.js so example modules that use the bare
+         specifier 'three' (OrbitControls, TransformControls) resolve to
+         the correct ESM build on unpkg when loaded in the browser. -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+    </script>
+
     <script type="module" src="src/main.js"></script>
   </body>
 </html>
