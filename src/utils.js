@@ -10,11 +10,6 @@ export const BOUNDS = {
 
 // Minecraft Concrete Colors (16)
 export const BOX_COLORS = [
-  0xe9ecec, // White
-  0x9d9d95, // Light Gray
-  0x474f52, // Gray
-  0x1d1d21, // Black
-  0x835432, // Brown
   0xb02e26, // Red
   0xf9801d, // Orange
   0xfad21d, // Yellow
@@ -26,6 +21,11 @@ export const BOX_COLORS = [
   0x8932b8, // Purple
   0xc74ebd, // Magenta
   0xf38baa, // Pink
+  0x835432, // Brown
+  0x9d9d95, // Light Gray
+  0x474f52, // Gray
+  0x1d1d21, // Black
+  0xe9ecec, // White (moved to end so defaults are more colorful)
 ];
 
 /**

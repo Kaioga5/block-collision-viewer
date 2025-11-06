@@ -178,3 +178,30 @@ export function setBoxValuesFromUI(id, newOrigin, newSize) {
     emitChange();
   }
 }
+
+// Accept color as '#rrggbb' string or numeric hex value and update the mesh
+export function setBoxColor(id, color) {
+  const box = boxes.find(b => b.id === id);
+  if (!box) return;
+
+  let colorNum = null;
+  if (typeof color === 'string') {
+    // strip '#' if present
+    const s = color.trim();
+    if (s.startsWith('#')) colorNum = parseInt(s.slice(1), 16);
+    else colorNum = parseInt(s, 16);
+  } else if (typeof color === 'number') {
+    colorNum = color;
+  }
+
+  if (!Number.isFinite(colorNum)) return;
+  box.color = colorNum;
+  try {
+    if (box.mesh && box.mesh.userData && box.mesh.userData.mesh && box.mesh.userData.mesh.material) {
+      box.mesh.userData.mesh.material.color.setHex(colorNum);
+    }
+  } catch (e) {
+    // ignore material update errors
+  }
+  emitChange();
+}

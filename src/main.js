@@ -44,13 +44,20 @@ UI.init(
       const b = boxManager.addBox([0, 8, 0], [4, 4, 4]);
       if (b) boxManager.selectBox(b.id);
     },
+    setBoxColor: (id, color) => boxManager.setBoxColor(id, color),
     copyJson: null,
     loadBoxes: (arr) => {
       boxManager.deleteAllBoxes();
       let loaded = 0;
       for (const b of arr) {
         if (loaded >= utils.MAX_BOXES) break;
+        // If the payload includes a color, prefer it when creating the box
         const nb = boxManager.addBox(b.origin, b.size);
+        if (nb && (b.color || b.hexColor || b.col)) {
+          // accept color values like '#rrggbb' or numeric
+          const c = b.color || b.hexColor || b.col;
+          boxManager.setBoxColor(nb.id, c);
+        }
         if (nb) loaded++;
       }
       if (boxManager.getBoxes().length > 0) boxManager.selectBox(boxManager.getBoxes()[0].id);

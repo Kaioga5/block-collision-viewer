@@ -42,7 +42,10 @@ function updateBoxListUI(boxes, selectedBox) {
     const colorNum = (typeof box.color === 'number') ? box.color : defaultColor;
     const colorHex = `#${colorNum.toString(16).padStart(6, '0')}`;
     try {
-      item.querySelector('.color-swatch').style.backgroundColor = colorHex;
+      const sw = item.querySelector('.color-swatch');
+      if (sw) sw.style.backgroundColor = colorHex;
+      const picker = item.querySelector('.color-picker');
+      if (picker) picker.value = colorHex;
     } catch (e) {
       // ignore if element not found
     }
@@ -81,9 +84,21 @@ function updateJsonOutputUI(boxes) {
 }
 
 function onUIInputChange(event) {
-  if (event.target.tagName !== 'INPUT' || event.target.type !== 'number') return;
   const input = event.target;
   const item = input.closest('.box-item');
+  if (!item) return;
+  // Handle color picker separately
+  if (input.type === 'color' || input.classList.contains('color-picker')) {
+    const id = item.dataset.id;
+    const colorValue = input.value; // e.g. '#ff0000'
+    callbacks.setBoxColor && callbacks.setBoxColor(id, colorValue);
+    // update swatch immediately
+    const sw = item.querySelector('.color-swatch');
+    if (sw) sw.style.backgroundColor = colorValue;
+    return;
+  }
+
+  if (input.tagName !== 'INPUT' || input.type !== 'number') return;
   if (!item) return;
   const id = item.dataset.id;
 

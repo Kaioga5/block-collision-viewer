@@ -30,9 +30,12 @@ export function initScene(container) {
   transformControls.setMode('translate');
   transformControls.setTranslationSnap(1);
 
-  transformControls.showX = true;
-  transformControls.showY = true;
-  transformControls.showZ = true;
+  // Disable TransformControls' own visual arrows so we only show the
+  // world-aligned ArrowHelpers (axis gizmo). TransformControls will still
+  // function for dragging.
+  transformControls.showX = false;
+  transformControls.showY = false;
+  transformControls.showZ = false;
   transformControls.showRotation = false;
   transformControls.showScale = false;
   transformControls.showXY = false;
