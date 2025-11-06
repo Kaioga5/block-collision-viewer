@@ -37,15 +37,26 @@ function updateBoxListUI(boxes, selectedBox) {
 
     if (selectedBox && selectedBox.id === box.id) item.classList.add('selected');
 
-    item.querySelector('.color-swatch').style.backgroundColor = `#${box.color.toString(16).padStart(6, '0')}`;
+    // Safely compute color hex; fall back to a default if missing.
+    const defaultColor = 0xe9ecec;
+    const colorNum = (typeof box.color === 'number') ? box.color : defaultColor;
+    const colorHex = `#${colorNum.toString(16).padStart(6, '0')}`;
+    try {
+      item.querySelector('.color-swatch').style.backgroundColor = colorHex;
+    } catch (e) {
+      // ignore if element not found
+    }
     item.querySelector('.box-name').textContent = `Box ${index + 1}`;
 
-    item.querySelector('.origin-x').value = box.origin[0];
-    item.querySelector('.origin-y').value = box.origin[1];
-    item.querySelector('.origin-z').value = box.origin[2];
-    item.querySelector('.size-w').value = box.size[0];
-    item.querySelector('.size-h').value = box.size[1];
-    item.querySelector('.size-d').value = box.size[2];
+  // Fill origin/size safely; guard against malformed box data.
+  const origin = Array.isArray(box.origin) && box.origin.length === 3 ? box.origin : [0, 0, 0];
+  const size = Array.isArray(box.size) && box.size.length === 3 ? box.size : [1, 1, 1];
+  item.querySelector('.origin-x').value = origin[0];
+  item.querySelector('.origin-y').value = origin[1];
+  item.querySelector('.origin-z').value = origin[2];
+  item.querySelector('.size-w').value = size[0];
+  item.querySelector('.size-h').value = size[1];
+  item.querySelector('.size-d').value = size[2];
 
     refs.boxListContainer.appendChild(item);
   });

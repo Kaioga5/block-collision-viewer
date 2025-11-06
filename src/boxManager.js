@@ -30,7 +30,10 @@ export function addBox(origin = [0, 1, 0], size = [2, 2, 2]) {
   if (boxes.length >= utils.MAX_BOXES) return null;
 
   const id = THREE.MathUtils.generateUUID();
-  const color = utils.BOX_COLORS[boxes.length % utils.BOX_COLORS.length];
+  // Pick a color based on current index. Guard against missing BOX_COLORS.
+  const color = (utils.BOX_COLORS && utils.BOX_COLORS.length)
+    ? utils.BOX_COLORS[boxes.length % utils.BOX_COLORS.length]
+    : 0xe9ecec;
 
   const clampedOrigin = utils.clampOrigin(origin, size);
   const clampedSize = utils.clampSize(clampedOrigin, size);
@@ -76,7 +79,13 @@ export function deleteBox(id) {
   boxes.forEach((b, i) => {
     const newColor = utils.BOX_COLORS[i % utils.BOX_COLORS.length];
     b.color = newColor;
-    b.mesh.userData.mesh.material.color.setHex(newColor);
+    try {
+      if (b.mesh && b.mesh.userData && b.mesh.userData.mesh && b.mesh.userData.mesh.material) {
+        b.mesh.userData.mesh.material.color.setHex(newColor);
+      }
+    } catch (e) {
+      // ignore material update errors
+    }
   });
 
   emitChange();
